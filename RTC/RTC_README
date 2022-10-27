@@ -1,0 +1,24 @@
+The RTC folder contains a python script (RTC_v#.py) to perform radiometric terrain correction (RTC)
+on Sentinel-1 Ground Range Detected (GRD) data via the European Space Agency's (ESA) SentiNels-1 Application
+Platform (i.e. SNAP). The script reads in an input file with the location of an external DEM, if specified
+(default = SRTM), the location of the GRD zip file, the location of an output directory to be created, and 
+the desired output pixel size. 
+
+Setup: 
+1) Create a dedicated Anaconda environment for RTC processing (e.g. conda create -n RTC_process) and activate it. 
+2) Install necessary dependencies; these include both Python and non-Python dependencies (see below).
+3) Update the RTC_v3.py code for the local pathways of SNAP and gdal (see below; this will be updated in future versions).
+
+Execution:
+1) Customize the input file (e.g. rtc_sample_inputs.txt) for the desired inputs. 
+2) Call the script: python RTC_v#.py rtc_sample_inputs.txt) 
+
+Dependencies (Python):
+- geopandas
+- shapefly
+
+Dependencies (non-Python):
+- gdal (Geospatial Data Abstraction Library; https://gdal.org/)
+- SNAP: install SNAP (https://step.esa.int/main/download/snap-download/)
+Note: A SNAP update may be necessary, even after a fresh install. 
+    E.g. /local_path_to_snap/snap/bin/snap --nosplash --nogui --modules --update-all
