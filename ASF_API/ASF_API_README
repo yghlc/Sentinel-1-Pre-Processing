@@ -15,7 +15,7 @@ Execution:
    
 2) activate conda environment with asf_search library (e.g. conda activate asf_api)
 
-3) Call the script: pythonn sentinel_adf_searchAPI_XXXXXX.py
+3) Call the script: python sentinel_adf_searchAPI_XXXXXX.py
 
 Dependencies:
 - Earth Data account (it's free)
