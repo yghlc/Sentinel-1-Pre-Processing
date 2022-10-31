@@ -3,8 +3,6 @@
 """
 introduction: download data from The Alaska Satellite Facility (ASF)
 
-authors: Huang Lingcao
-email:huanglingcao@gmail.com
 add time: 31 October, 2022
 """
 
