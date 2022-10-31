@@ -49,11 +49,12 @@ def download_data_from_asf(idx,roi_count,roi_wkt, save_dir, start_date, end_date
     if not os.path.isdir(download_dir):
         os.makedirs(download_dir)
 
+    # it will skip files that have been downloaded
     results.download(path=download_dir, session=session)  # download results to a path
     print(datetime.now(),'Finished Download')
 
     ## Save results to an output log
-    log_filename = os.path.join(download_dir, "download_log.txt")
+    log_filename = os.path.join(download_dir, "download_data.json")
     print(' ')
     print(datetime.now(),'Saving log results to ', log_filename)
     stdoutOrigin = sys.stdout
