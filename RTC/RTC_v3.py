@@ -98,7 +98,7 @@ def applyTC(new_dir, in_data_path, baseGran, pixsiz, extDEM):
     print('Applying Terrain Correction -- This will take some time')
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     output = p.stdout.read()
-     terrain_correction_file_path = new_dir + '/' + baseGran + '_OB_GBN_CAL_SP_TC.dim'
+    terrain_correction_file_path = new_dir + '/' + baseGran + '_OB_GBN_CAL_SP_TC.dim'
     return terrain_correction_file_path
 
 # ---------------------------------------------------------------------------
