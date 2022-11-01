@@ -13,9 +13,12 @@ from subprocess import Popen, PIPE, STDOUT
 import geopandas as gpd
 import argparse,ast
 
+from datetime import datetime
+
 # --------------------------------------------------------------------------- 
-# Where the Sentinel 1 Toolbox graphing tool exe is located
+# Where the Sentinel 1 Toolbox graphing tool exe and GDAL is located
 baseSNAP = '/home/rcassotto/snap/bin/gpt'
+gdal_translate = '/usr/local/bin/gdal_translate'
 
 def timestamp(date):
     return time.mktime(date.timetuple())
@@ -47,7 +50,7 @@ def applyremovebordernoise(new_dir, in_data_path, baseGran):
     out = '-t ' + new_dir + '/' + baseGran + '_OB_GBN '
     in_data_cmd = '-SsourceProduct=' + in_data_path
     cmd = baseSNAP + Noise_flag + out + in_data_cmd
-    print('Removing Border Noise')
+    print(datetime.now(), 'Removing Border Noise')
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     output = p.stdout.read()
     border_noise_file_path = os.path.join(new_dir, baseGran + '_OB_GBN.dim')
@@ -60,7 +63,7 @@ def applyCal(new_dir, in_data_path, baseGran):
     out = '-t ' + new_dir + '/' + baseGran + '_OB_GBN_CAL '
     in_data_cmd = '-Ssource=' + in_data_path
     cmd = baseSNAP + calFlag + out + in_data_cmd
-    print('Applying Calibration')
+    print(datetime.now(),'Applying Calibration')
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     output = p.stdout.read()
     calibrated_file_path = os.path.join(new_dir, baseGran + '_OB_GBN_CAL.dim')
@@ -73,7 +76,7 @@ def applySpeckle(new_dir, in_data_path, baseGran):
     out = '-t ' + new_dir + '/' + baseGran + '_OB_GBN_CAL_SP '
     in_data_cmd = '-Ssource=' + in_data_path
     cmd = baseSNAP + speckle_flag + out + in_data_cmd
-    print('Applying Speckle')
+    print(datetime.now(),'Applying Speckle')
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     output = p.stdout.read()
     speckle_filter_file_path = os.path.join(new_dir, baseGran + '_OB_GBN_CAL_SP.dim')
@@ -95,7 +98,7 @@ def applyTC(new_dir, in_data_path, baseGran, pixsiz, extDEM):
     else:
         in_data_cmd = in_data_cmd + ' -PdemName=\"SRTM 1Sec HGT\" '
     cmd = baseSNAP + tcFlag + out + in_data_cmd
-    print('Applying Terrain Correction -- This will take some time')
+    print(datetime.now(),'Applying Terrain Correction -- This will take some time')
     p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     output = p.stdout.read()
     terrain_correction_file_path = new_dir + '/' + baseGran + '_OB_GBN_CAL_SP_TC.dim'
@@ -110,13 +113,13 @@ def Sigma0_FF_2_gtif(new_dir, Sigma0_directory, granule):
     Sigma0_VV_save = new_dir + '/' + granule + '_' + Sigma0_VV_path.split('/')[-1].split('.')[0] + '.tif'
     Sigma0_VH_save = new_dir + '/' + granule + '_' + Sigma0_VH_path.split('/')[-1].split('.')[0] + '.tif'
     Incidnc_Angle_save = new_dir + '/' + granule + '_incidenceAngleFromEllipsoid.tif'  # new addition 10/12/2022
-    cmd_VV = '/usr/local/bin/gdal_translate -of GTiff ' + Sigma0_VV_path + ' ' + Sigma0_VV_save
-    cmd_VH = '/usr/local/bin/gdal_translate -of GTiff ' + Sigma0_VH_path + ' ' + Sigma0_VH_save
-    cmd_Incidnc = '/usr/local/bin/gdal_translate -of GTiff ' + Incidnc_Angle_path + ' ' + Incidnc_Angle_save  # new addition 10/12/2022
+    cmd_VV = gdal_translate+' -of GTiff ' + Sigma0_VV_path + ' ' + Sigma0_VV_save
+    cmd_VH = gdal_translate+' -of GTiff ' + Sigma0_VH_path + ' ' + Sigma0_VH_save
+    cmd_Incidnc = gdal_translate+' -of GTiff ' + Incidnc_Angle_path + ' ' + Incidnc_Angle_save  # new addition 10/12/2022
     p_VV = Popen(cmd_VV, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     p_VH = Popen(cmd_VH, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     p_Incidnc = Popen(cmd_Incidnc, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT) # new addition 10/12/2022
-    print('Incidence Angle outfilename: ', Incidnc_Angle_save)
+    print(datetime.now(),'Incidence Angle outfilename: ', Incidnc_Angle_save)
 
 # ---------------------------------------------------------------------------    
 #Clean files
@@ -147,7 +150,7 @@ def clean_dirs(Output_Directory,Final_Out_Dir):
         if os.path.isfile(file):
             shutil.move(file,file_out)
             if '.img' in file_out:
-                cmd = '/usr/local/bin/gdal_translate -of GTiff ' + file_out + ' ' + file_out[:-4] + '.tif'
+                cmd = gdal_translate+' -of GTiff ' + file_out + ' ' + file_out[:-4] + '.tif'
                 Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
 
     shutil.rmtree(Output_Directory)    # Remove *_Processed directory

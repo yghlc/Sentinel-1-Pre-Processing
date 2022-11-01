@@ -15,6 +15,10 @@ ${down_py} ${ext_shp} -d ${save_dir}  -s ${s_date} -e ${e_date} -u ${username} -
 
 
 # Apply Orbit File, Remove GRD Border Noise, Calibration, Speckle Filter, and Terrain Correction
-rtc_py=~/codes/PycharmProjects/yghlc_Sentinel-1-Pre-Processing/RTC/RTC_v3.py
-python ${rtc_py} rtc_houston_2017_inputs.txt
+rtc_py=~/codes/PycharmProjects/yghlc_Sentinel-1-Pre-Processing/snap_GRD_process.py
+outdir=${save_dir}/pre-processed
+${rtc_py} one_zip.txt -d ${outdir}
+
+
+
 
