@@ -52,7 +52,11 @@ def GRD_file_preProcessing(grd_list,save_dir,pixel_size, dem_file=None):
     total_time = time.time() - t0
     print(datetime.now(),'Process complete, took %s seconds' % (total_time))
 
-
+def test_Sigma0_FF_2_gtif():
+    Output_Directory = os.path.expanduser('~/Data/tmp_data/flood_detection/pre-processed/S1A_IW_GRDH_1SDV_20170829T002620_20170829T002645_018131_01E74D_D734_Processed')
+    Sigma0_directory = os.path.join(Output_Directory,'S1A_IW_GRDH_1SDV_20170829T002620_20170829T002645_018131_01E74D_D734_OB_GBN_CAL_SP_TC.data')
+    granule = 'S1A_IW_GRDH_1SDV_20170829T002620_20170829T002645_018131_01E74D_D734'
+    RTC_v3.Sigma0_FF_2_gtif(Output_Directory, Sigma0_directory, granule)
 
 def main(options, args):
     grd_file_list =get_grd_file_list(args[0])
@@ -67,6 +71,7 @@ def main(options, args):
     RTC_v3.gdal_translate = env_setting['gdal_translate_bin']
     print(datetime.now(), 'gdal_translate:', RTC_v3.gdal_translate)
 
+    # test_Sigma0_FF_2_gtif()
     GRD_file_preProcessing(grd_file_list, save_dir, pixel_size, dem_file=dem_file)
 
 

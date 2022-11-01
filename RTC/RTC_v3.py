@@ -23,6 +23,14 @@ gdal_translate = '/usr/local/bin/gdal_translate'
 def timestamp(date):
     return time.mktime(date.timetuple())
 
+def run_pOpen(cmd_str):
+    ps = Popen(cmd_str, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+    out, err = ps.communicate()
+    returncode = ps.returncode
+    if returncode != 0:
+        print(out.decode())
+        print('err:',err)
+
 # ---------------------------------------------------------------------------
 # making the output directory
 def output_dir(output_dir,gran):
@@ -116,9 +124,9 @@ def Sigma0_FF_2_gtif(new_dir, Sigma0_directory, granule):
     cmd_VV = gdal_translate+' -of GTiff ' + Sigma0_VV_path + ' ' + Sigma0_VV_save
     cmd_VH = gdal_translate+' -of GTiff ' + Sigma0_VH_path + ' ' + Sigma0_VH_save
     cmd_Incidnc = gdal_translate+' -of GTiff ' + Incidnc_Angle_path + ' ' + Incidnc_Angle_save  # new addition 10/12/2022
-    p_VV = Popen(cmd_VV, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    p_VH = Popen(cmd_VH, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    p_Incidnc = Popen(cmd_Incidnc, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT) # new addition 10/12/2022
+    run_pOpen(cmd_VV)
+    run_pOpen(cmd_VH)
+    run_pOpen(cmd_Incidnc)
     print(datetime.now(),'Incidence Angle outfilename: ', Incidnc_Angle_save)
 
 # ---------------------------------------------------------------------------    
