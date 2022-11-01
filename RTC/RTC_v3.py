@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 """Sentinel 1 RTC Correction module """  
 # ---------------------------------------------------------------------------
-import os,datetime,time,glob,shutil,zipfile,re
+import os,sys,datetime,time,glob,shutil,zipfile,re
 from shapely.geometry import Polygon
 from subprocess import Popen, PIPE, STDOUT
 import geopandas as gpd
@@ -29,7 +29,9 @@ def run_pOpen(cmd_str):
     returncode = ps.returncode
     if returncode != 0:
         print(out.decode())
-        print('err:',err)
+        # print(p.stdout.read())
+        print(err)
+        sys.exit(1)
 
 # ---------------------------------------------------------------------------
 # making the output directory
@@ -46,8 +48,7 @@ def applyOrbit(new_dir, granule_path_zip, granule):
     oType = '-PcontinueOnFail=\"false\" -PorbitType=\'Sentinel Precise (Auto Download)\' '
     out = '-t ' + new_dir + '/' + granule + '_OB '
     cmd = baseSNAP + aoFlag + out + oType + granule_path_zip
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    output = p.stdout.read()
+    run_pOpen(cmd)
     orbit_corrected_file_path = os.path.join(new_dir, granule + '_OB.dim')
     return orbit_corrected_file_path
 
@@ -59,8 +60,7 @@ def applyremovebordernoise(new_dir, in_data_path, baseGran):
     in_data_cmd = '-SsourceProduct=' + in_data_path
     cmd = baseSNAP + Noise_flag + out + in_data_cmd
     print(datetime.now(), 'Removing Border Noise')
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    output = p.stdout.read()
+    run_pOpen(cmd)
     border_noise_file_path = os.path.join(new_dir, baseGran + '_OB_GBN.dim')
     return border_noise_file_path
 
@@ -72,8 +72,7 @@ def applyCal(new_dir, in_data_path, baseGran):
     in_data_cmd = '-Ssource=' + in_data_path
     cmd = baseSNAP + calFlag + out + in_data_cmd
     print(datetime.now(),'Applying Calibration')
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    output = p.stdout.read()
+    run_pOpen(cmd)
     calibrated_file_path = os.path.join(new_dir, baseGran + '_OB_GBN_CAL.dim')
     return calibrated_file_path# -*- coding: utf-8 -*-
 
@@ -85,8 +84,7 @@ def applySpeckle(new_dir, in_data_path, baseGran):
     in_data_cmd = '-Ssource=' + in_data_path
     cmd = baseSNAP + speckle_flag + out + in_data_cmd
     print(datetime.now(),'Applying Speckle')
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    output = p.stdout.read()
+    run_pOpen(cmd)
     speckle_filter_file_path = os.path.join(new_dir, baseGran + '_OB_GBN_CAL_SP.dim')
     return speckle_filter_file_path
 
@@ -107,8 +105,7 @@ def applyTC(new_dir, in_data_path, baseGran, pixsiz, extDEM):
         in_data_cmd = in_data_cmd + ' -PdemName=\"SRTM 1Sec HGT\" '
     cmd = baseSNAP + tcFlag + out + in_data_cmd
     print(datetime.now(),'Applying Terrain Correction -- This will take some time')
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    output = p.stdout.read()
+    run_pOpen(cmd)
     terrain_correction_file_path = new_dir + '/' + baseGran + '_OB_GBN_CAL_SP_TC.dim'
     return terrain_correction_file_path
 
@@ -159,7 +156,7 @@ def clean_dirs(Output_Directory,Final_Out_Dir):
             shutil.move(file,file_out)
             if '.img' in file_out:
                 cmd = gdal_translate+' -of GTiff ' + file_out + ' ' + file_out[:-4] + '.tif'
-                Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+                run_pOpen(cmd)
 
     shutil.rmtree(Output_Directory)    # Remove *_Processed directory
     
