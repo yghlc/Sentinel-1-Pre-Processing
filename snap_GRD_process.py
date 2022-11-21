@@ -29,9 +29,9 @@ def GRD_file_preProcessing(grd_list,temp_dir,save_dir,pixel_size, dem_file=None)
         t1 = time.time()
         print(datetime.now(),'Processing GRD File %s / %s' % (idx + 1, total_count))
         granule = os.path.basename(grd).split('.')[0]
-        Output_Directory = RTC_v3.output_dir(temp_dir, granule)
         final_save_dir = os.path.join(save_dir, 'final')
         if len(glob.glob(os.path.join(final_save_dir, granule + '*'))) == 0:
+            Output_Directory = RTC_v3.output_dir(temp_dir, granule)
             # orbit correction
             Orbit_Correction = RTC_v3.applyOrbit(Output_Directory, grd, granule)
             # border noise removal
