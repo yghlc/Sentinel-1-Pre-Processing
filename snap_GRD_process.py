@@ -22,15 +22,16 @@ def get_grd_file_list(file_or_dir):
             GRD_files = [line.strip() for line in f_obj.readlines()]
     return GRD_files
 
-def GRD_file_preProcessing(grd_list,save_dir,pixel_size, dem_file=None):
+def GRD_file_preProcessing(grd_list,temp_dir,save_dir,pixel_size, dem_file=None):
     t0 = time.time()
     total_count = len(grd_list)
     for idx, grd in enumerate(grd_list):
         t1 = time.time()
         print(datetime.now(),'Processing GRD File %s / %s' % (idx + 1, total_count))
         granule = os.path.basename(grd).split('.')[0]
-        Output_Directory = RTC_v3.output_dir(save_dir, granule)
-        if len(glob.glob(os.path.join(Output_Directory, '*VV*'))) == 0:
+        Output_Directory = RTC_v3.output_dir(temp_dir, granule)
+        final_save_dir = os.path.join(save_dir, 'final')
+        if len(glob.glob(os.path.join(final_save_dir, granule + '*'))) == 0:
             # orbit correction
             Orbit_Correction = RTC_v3.applyOrbit(Output_Directory, grd, granule)
             # border noise removal
@@ -45,7 +46,7 @@ def GRD_file_preProcessing(grd_list,save_dir,pixel_size, dem_file=None):
             # write out data to geotiffs VV and VH
             Sigma0_directory = Terrain_Correction.replace('.dim', '.data')
             RTC_v3.Sigma0_FF_2_gtif(Output_Directory, Sigma0_directory, granule)
-            RTC_v3.clean_dirs(Output_Directory, os.path.join(save_dir, 'final'))
+            RTC_v3.clean_dirs(Output_Directory, final_save_dir)
         else:
             print('%s already has output files...skipping' % (grd))
         print(datetime.now(), 'Complete, took %s seconds' % (time.time() - t1))
@@ -61,6 +62,7 @@ def test_Sigma0_FF_2_gtif():
 def main(options, args):
     grd_file_list =get_grd_file_list(args[0])
     save_dir = options.save_dir
+    temp_dir = options.temp_dir if options.temp_dir is not None else save_dir
     pixel_size = options.save_pixel_size
     dem_file = options.elevation_file
     setting_json = options.env_setting
@@ -72,7 +74,7 @@ def main(options, args):
     print(datetime.now(), 'gdal_translate:', RTC_v3.gdal_translate)
 
     # test_Sigma0_FF_2_gtif()
-    GRD_file_preProcessing(grd_file_list, save_dir, pixel_size, dem_file=dem_file)
+    GRD_file_preProcessing(grd_file_list, temp_dir, save_dir, pixel_size, dem_file=dem_file)
 
 
 
@@ -85,6 +87,10 @@ if __name__ == "__main__":
     parser.add_option("-d", "--save_dir",
                       action="store", dest="save_dir",default='asf_data',
                       help="the folder to save pre-processed results")
+
+    parser.add_option("-t", "--temp_dir",
+                      action="store", dest="temp_dir",
+                      help="the temporal folder for saving intermediate data ")
 
     parser.add_option("-p", "--save_pixel_size",
                       action="store", dest="save_pixel_size",type=float, default='10.0',
