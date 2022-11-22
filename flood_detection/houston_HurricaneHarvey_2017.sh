@@ -24,9 +24,13 @@ ${rtc_py} all_zip.txt -d ${outdir}
 #fd_py=~/codes/PycharmProjects/yghlc_Sentinel-1-Flood-Detection/SAR_Flood_Detection_v02.py
 #python ${fd_py} fd_houston_2017_inputs.txt
 fd_py=~/codes/PycharmProjects/yghlc_Sentinel-1-Flood-Detection/sar_flood_det.py
-water_mask=~/Data/global_surface_water/extent_epsg2163_houston/extent_100W_30_40N_v1_3_2020.tif
+water_mask=~/Data/global_surface_water/extent_epsg4326_houston/extent_100W_30_40N_v1_3_2020.tif
 fd_dir=${save_dir}/FD_results_v2
-${fd_py} all_VV_Sigma0_images.txt -w ${water_mask} -d ${fd_dir}
+#img_list=one_VV_Sigma0_images.txt
+#img_list=one_VH_Sigma0_images.txt
+img_list=VH_VV_Sigma0_images.txt
+${fd_py} ${img_list} --src_nodata=0.0 -w ${water_mask} -d ${fd_dir}  --verbose \
+	--process_num=4
 
 
 
