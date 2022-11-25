@@ -18,6 +18,7 @@ each folder.
    conda install -c conda-forge rasterio
    conda install -c conda-forge scikit-image
    conda install -c conda-forge simplekml
+   pip install opencv-python
    
    ### install SNAP
    # SNAP: install SNAP (https://step.esa.int/main/download/snap-download/)
