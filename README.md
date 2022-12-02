@@ -25,6 +25,9 @@ each folder.
    # Note: A SNAP update may be necessary, even after a fresh install. 
    # E.g. /local_path_to_snap/snap/bin/snap --nosplash --nogui --modules --update-all
    
+   ### Download DEM
+   pip install elevation    # to download SRTM https://github.com/bopen/elevation
+   
   
    
 ```

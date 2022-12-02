@@ -15,6 +15,13 @@ from shapely import geometry
 import re
 import pandas as pd
 
+def read_vector_bound(shp_path):
+    shapefile = gpd.read_file(shp_path)
+    polygons = shapefile.geometry.values
+    if len(polygons) != 1:
+        raise ValueError('only support one polygon')
+    return polygons[0].bounds
+
 def read_shape_gpd_to_NewPrj(shp_path, prj_str):
     '''
     read polyogns using geopandas, and re-project to a projection if necessary.
