@@ -27,7 +27,7 @@ def download_SRTM(extent_shp,save_path,b_clean=False):
     bounds = vector_tools.read_vector_bound(extent_shp)
     # print(bounds)
     gen_bounds = elevation.datasource.build_bounds(bounds, margin='0')
-    cache_dir = os.path.expanduser('~/.elevation')
+    cache_dir = os.path.expanduser('~/elevation')
     datasource_root = elevation.datasource.seed(cache_dir=cache_dir,bounds=gen_bounds, product='SRTM1', max_download_tiles=3000)
     elevation.datasource.do_clip(datasource_root, gen_bounds, save_path)
     if b_clean:
