@@ -23,11 +23,12 @@ def download_SRTM_cmd(extent_shp,save_path):
     if res != 0:
         sys.exit(1)
 
-def download_SRTM(extent_shp,save_path,b_clean=False):
+def download_SRTM(extent_shp,save_path,cache_dir,b_clean=False):
     bounds = vector_tools.read_vector_bound(extent_shp)
     # print(bounds)
     gen_bounds = elevation.datasource.build_bounds(bounds, margin='0')
-    cache_dir = os.path.expanduser('~/elevation')
+    if cache_dir is None:
+        cache_dir = os.path.expanduser('~/elevation')
     datasource_root = elevation.datasource.seed(cache_dir=cache_dir,bounds=gen_bounds, product='SRTM1', max_download_tiles=3000)
     elevation.datasource.do_clip(datasource_root, gen_bounds, save_path)
     if b_clean:
@@ -39,6 +40,7 @@ def main(options, args):
 
     save_path = options.save_path
     b_clean = options.clean
+    cache_dir = options.cache_dir
     if save_path is None:
         file_name = os.path.splitext(os.path.basename(extent_shp))[0]
         save_path = os.path.join(os. getcwd(),file_name + '_DEM.tif')
@@ -47,7 +49,7 @@ def main(options, args):
     print(datetime.now(), 'download SRTM1, \nwill save to %s'%save_path)
 
     # download_SRTM_cmd(extent_shp,save_path)
-    download_SRTM(extent_shp, save_path,b_clean=b_clean)
+    download_SRTM(extent_shp, save_path,cache_dir,b_clean=b_clean)
 
 if __name__ == "__main__":
 
@@ -57,7 +59,11 @@ if __name__ == "__main__":
 
     parser.add_option("-d", "--save_path",
                       action="store", dest="save_path",
-                      help="the the save file path")
+                      help="the path for saving a DEM file")
+
+    parser.add_option("-a", "--cache_dir",
+                      action="store", dest="cache_dir",
+                      help="the cache directory")
 
     parser.add_option("-c", "--clean",
                       action="store_true", dest="clean", default=False,
