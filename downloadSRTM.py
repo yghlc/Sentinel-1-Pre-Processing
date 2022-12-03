@@ -47,6 +47,9 @@ def main(options, args):
     else:
         save_path = os.path.abspath(save_path)
     print(datetime.now(), 'download SRTM1, \nwill save to %s'%save_path)
+    if os.path.isfile(save_path):
+        print("%s already exists, skip")
+        return
 
     # download_SRTM_cmd(extent_shp,save_path)
     download_SRTM(extent_shp, save_path,cache_dir,b_clean=b_clean)
