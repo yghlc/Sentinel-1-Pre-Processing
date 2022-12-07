@@ -67,11 +67,19 @@ def main(options, args):
     dem_file = options.elevation_file
     setting_json = options.env_setting
 
-    env_setting = read_dict_from_txt_json(setting_json)
-    RTC_v3.baseSNAP = env_setting['snap_bin_gpt']
-    print(datetime.now(),'setting SNAP gpt:', RTC_v3.baseSNAP)
-    RTC_v3.gdal_translate = env_setting['gdal_translate_bin']
-    print(datetime.now(), 'gdal_translate:', RTC_v3.gdal_translate)
+    if os.path.isfile(setting_json):
+        env_setting = read_dict_from_txt_json(setting_json)
+        RTC_v3.baseSNAP = env_setting['snap_bin_gpt']
+        print(datetime.now(),'setting SNAP gpt:', RTC_v3.baseSNAP)
+        RTC_v3.gdal_translate = env_setting['gdal_translate_bin']
+        print(datetime.now(), 'gdal_translate:', RTC_v3.gdal_translate)
+    else:
+        RTC_v3.baseSNAP = os.getenv('SNAP_BIN_GPT')
+        if RTC_v3.baseSNAP is None:
+            raise ValueError('SNAP_BIN_GPT is not in Environment Variables')
+        RTC_v3.gdal_translate = os.getenv('GDAL_TRANSLATE_BIN')
+        if RTC_v3.gdal_translate is None:
+            raise ValueError('GDAL_TRANSLATE_BIN is not in Environment Variables')
 
     # test_Sigma0_FF_2_gtif()
     GRD_file_preProcessing(grd_file_list, temp_dir, save_dir, pixel_size, dem_file=dem_file)
