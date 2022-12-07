@@ -1,5 +1,4 @@
 FROM ubuntu:22.04
-MAINTAINER Lingcao Huang (lingcao.huang@colorado.edu)
 
 # Install base utilities
 RUN apt-get update && apt-get install -y  \
@@ -17,6 +16,9 @@ RUN apt-get update && apt-get install -y  \
 ENV CONDA_DIR /opt/miniconda3
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/sh ~/miniconda.sh -b -p /opt/miniconda3  && rm ~/miniconda.sh
+
+# Make RUN commands use the new environment (conda base): 
+SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
 
 # Put conda in path so we can use conda activate
 ENV PATH=$CONDA_DIR/bin:$PATH
@@ -40,6 +42,15 @@ RUN wget --quiet https://download.esa.int/step/snap/9.0/installers/esa-snap_all_
 #RUN /opt/snap/bin/snap --nosplash --nogui --modules --update-all
 
 # clone github repo
-RUN git clone https://github.com/yghlc/Sentinel-1-Pre-Processing.git /opt/Sentinel-1-Pre-Processing  && \
-    git clone https://github.com/yghlc/Sentinel-1-Flood-Detection.git /opt/Sentinel-1-Flood-Detection
+RUN git clone https://github.com/yghlc/Sentinel-1-Pre-Processing.git /opt/Sentinel-1-Pre-Processing
+
+# set some environment
+ENV PATH=/opt/Sentinel-1-Pre-Processing:$PATH
+ENV SNAP_BIN_GPT=/opt/snap/bin/gpt
+ENV GDAL_TRANSLATE_BIN=/opt/miniconda3/bin/gdal_translate
+
+COPY run.sh .
+# WORKDIR /data
+
+CMD ["conda", "run", "--no-capture-output", "-n", "base","/bin/bash","-c","./run.sh"]
 
