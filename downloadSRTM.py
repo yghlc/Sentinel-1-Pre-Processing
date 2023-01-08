@@ -52,10 +52,12 @@ def srtm_tiles_download(tile_list, cache_dir):
     passwd = netrc(netrcDir).authenticators(urs)[2]
 
     srtm_url = 'https://e4ftl01.cr.usgs.gov/MEASURES/SRTMGL1.003/2000.02.11/'
+    download_tiles = []
     for file in tile_list:
         save_tile = os.path.join(cache_dir,file)
         if os.path.isfile(save_tile):
             print('%s already exist'%save_tile)
+            download_tiles.append(file)
             continue
         file_url = "{}{}".format(srtm_url, file)
         # wget.download(file_url, file)  # using requests instead (below)
@@ -76,6 +78,9 @@ def srtm_tiles_download(tile_list, cache_dir):
                             break
                         d.write(chunk)
                 print('Downloaded file: {}'.format(file))
+                download_tiles.append(file)
+
+    return download_tiles
 
 def process_srtm_tiles(cache_dir, tile_list, save_path):
     if os.path.isfile(save_path):
@@ -135,9 +140,11 @@ def download_SRTM_url(extent_shp, save_path,cache_dir):
     if len(ext_polys) == 1:
         # create file names
         tiles = extent_to_1degree_tiles(ext_polys[0])
-        print(tiles)
-        srtm_tiles_download(tiles,cache_dir)
-        process_srtm_tiles(cache_dir, tiles, save_path)
+        download_tiles = srtm_tiles_download(tiles,cache_dir)
+        if len(download_tiles) > 0:
+            process_srtm_tiles(cache_dir, download_tiles, save_path)
+        else:
+            print('error, NO downloaded SRTM tiles')
     elif len(ext_polys) > 1:
         raise ValueError('currently, only support one polygon')
         pass
