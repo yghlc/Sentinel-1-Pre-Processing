@@ -13,21 +13,15 @@ each folder.
    conda activate sar
    conda install -c conda-forge asf_search
    conda install -c conda-forge geopandas   
-   
-   # flood detection
    conda install -c conda-forge rasterio
-   conda install -c conda-forge scikit-image
-   conda install -c conda-forge simplekml
-   pip install opencv-python
    
    ### install SNAP
    # SNAP: install SNAP (https://step.esa.int/main/download/snap-download/)
    # Note: A SNAP update may be necessary, even after a fresh install. 
    # E.g. /local_path_to_snap/snap/bin/snap --nosplash --nogui --modules --update-all
    
-   ### Download DEM
-   pip install elevation    # to download SRTM https://github.com/bopen/elevation
-   
-  
+   ### Download DEM 
+   # pip install elevation    # to download SRTM https://github.com/bopen/elevation (no need)
+   pip install wget  
    
 ```

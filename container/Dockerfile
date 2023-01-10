@@ -30,6 +30,7 @@ RUN conda install -c conda-forge -y geopandas
 RUN conda install -c conda-forge -y rasterio
 
 RUN pip install elevation
+RUN pip install wget
 
 # t: tarball, i index-cache p: package  y: Do not ask for confirmation
 RUN conda clean -tipy
