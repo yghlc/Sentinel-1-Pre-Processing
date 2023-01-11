@@ -20,7 +20,7 @@ import math
 
 # use ~/.netrc for user/password
 import os
-import wget
+# import wget
 import requests
 from netrc import netrc
 
