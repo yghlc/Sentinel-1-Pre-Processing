@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     parser.add_option("-s", "--env_setting",
                       action="store", dest="env_setting", default='env_setting.json',
-                      help=" the setting of software environment  ")
+                      help=" the setting of the software environment  ")
 
 
     (options, args) = parser.parse_args()
