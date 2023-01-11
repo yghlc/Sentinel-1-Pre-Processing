@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     usage = "usage: %prog [options] grd_files.txt or grd_directory "
     parser = OptionParser(usage=usage, version="1.0 2022-10-31")
-    parser.description = 'Introduction: Pre-processing SAR GRD files, input a txt file contains file list or a directory containing files'
+    parser.description = 'Introduction: Pre-processing SAR GRD files, input a txt file containing a file list or a directory containing files'
 
     parser.add_option("-d", "--save_dir",
                       action="store", dest="save_dir",default='asf_data',
