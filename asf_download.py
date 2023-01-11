@@ -14,6 +14,15 @@ import time
 from vector_tools import read_shape_gpd_to_NewPrj
 
 import asf_search as asf
+from netrc import netrc
+
+def get_user_password_netrc():
+    # Set up authentication using .netrc file
+    urs = 'urs.earthdata.nasa.gov'  # Address to call for authentication
+    netrcDir = os.path.expanduser("~/.netrc")
+    user = netrc(netrcDir).authenticators(urs)[0]
+    passwd = netrc(netrcDir).authenticators(urs)[2]
+    return user, passwd
 
 def shapefile_to_ROIs_wkt(shp_path):
     polygons = read_shape_gpd_to_NewPrj(shp_path,'EPSG:4326')  # lat, lon
@@ -73,6 +82,10 @@ def main(options, args):
     end_date = options.end_date
     user_name = options.username
     password = options.password
+
+    if user_name is None or password is None:
+        print('Get user name and password from the .netrc file')
+        user_name, user_name = get_user_password_netrc()
 
     print(datetime.now(), 'download data from ASF, start_date: %s, end_date: %s, user: %s, \nwill save to %s'%(start_date,end_date,user_name,save_dir))
 
