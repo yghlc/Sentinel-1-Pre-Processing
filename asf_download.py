@@ -85,7 +85,7 @@ def main(options, args):
 
     if user_name is None or password is None:
         print('Get user name and password from the .netrc file')
-        user_name, user_name = get_user_password_netrc()
+        user_name, password = get_user_password_netrc()
 
     print(datetime.now(), 'download data from ASF, start_date: %s, end_date: %s, user: %s, \nwill save to %s'%(start_date,end_date,user_name,save_dir))
 
