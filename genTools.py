@@ -15,5 +15,11 @@ def read_dict_from_txt_json(file_path):
         data = json.load(f_obj)
         return data
 
+def read_list_from_txt(file_name):
+    with open(file_name,'r') as f_obj:
+        lines = f_obj.readlines()
+        lines = [item.strip() for item in lines]
+        return lines
+
 if __name__ == '__main__':
     pass

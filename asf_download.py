@@ -16,6 +16,8 @@ from vector_tools import read_shape_gpd_to_NewPrj
 import asf_search as asf
 from netrc import netrc
 
+from genTools import read_list_from_txt
+
 def get_user_password_netrc():
     # Set up authentication using .netrc file
     urs = 'urs.earthdata.nasa.gov'  # Address to call for authentication
@@ -30,6 +32,39 @@ def shapefile_to_ROIs_wkt(shp_path):
         raise ValueError('No polygons in %s'%shp_path)
     ROIs_wkt = [str(p) for p in polygons ]
     return ROIs_wkt
+
+def download_data_from_asf_list(file_list_txt, save_dir, username, password):
+    ## ROI
+    print(datetime.now(),'Searching... ... ...')
+
+    file_ids_list = read_list_from_txt(file_list_txt)
+    if len(file_ids_list) < 1:
+        raise ValueError('No file list in %s'%file_list_txt)
+    results = asf.granule_search(file_ids_list)
+    print(datetime.now(),'Found %s results' % (len(results)))
+    session = asf.ASFSession()
+    session.auth_with_creds(username, password)
+    print(datetime.now(),'Downloading... ... ...')
+
+    download_dir = save_dir
+
+    if not os.path.isdir(download_dir):
+        os.makedirs(download_dir)
+
+    # it will skip files that have been downloaded
+    results.download(path=download_dir, session=session)  # download results to a path
+    print(datetime.now(),'Finished Download')
+
+    ## Save results to an output log
+    log_filename = os.path.join(download_dir, "download_data.json")
+    print(' ')
+    print(datetime.now(),'Saving log results to ', log_filename)
+    stdoutOrigin = sys.stdout
+    # sys.stdout = open (download_dir + region + "_download_log.txt", "w")
+    sys.stdout = open(log_filename, "w")
+    print(results)
+    sys.stdout.close()
+    sys.stdout = stdoutOrigin
 
 
 def download_data_from_asf(idx,roi_count,roi_wkt, save_dir, start_date, end_date, processingLevel, username, password,
@@ -91,20 +126,27 @@ def main(options, args):
 
     processingLevel = 'GRD_HD'
 
-    # shapefile to  ROI
-    ROIs_wkt = shapefile_to_ROIs_wkt(extent_shp)
-    for idx, roi_wkt in enumerate(ROIs_wkt):
-        # download data
-        download_data_from_asf(idx, len(ROIs_wkt), roi_wkt, save_dir, start_date, end_date, processingLevel, user_name,
-                               password,
-                               beamMode='IW', platform=asf.PLATFORM.SENTINEL1)
+
+    if extent_shp.endswith('.txt'):
+        print(datetime.now(), "the input is a TXT file")
+        file_list_txt = extent_shp
+        download_data_from_asf_list(file_list_txt, save_dir, user_name, password)
+
+    else:
+        # shapefile to  ROI
+        ROIs_wkt = shapefile_to_ROIs_wkt(extent_shp)
+        for idx, roi_wkt in enumerate(ROIs_wkt):
+            # download data
+            download_data_from_asf(idx, len(ROIs_wkt), roi_wkt, save_dir, start_date, end_date, processingLevel, user_name,
+                                   password,
+                                   beamMode='IW', platform=asf.PLATFORM.SENTINEL1)
 
 
 
 
 if __name__ == "__main__":
 
-    usage = "usage: %prog [options] extent_shp "
+    usage = "usage: %prog [options] extent_shp or file_ids.txt"
     parser = OptionParser(usage=usage, version="1.0 2022-10-31")
     parser.description = 'Introduction: download data from the Alaska Satellite Facility  '
 
