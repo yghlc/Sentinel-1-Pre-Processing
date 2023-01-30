@@ -23,5 +23,8 @@ each folder.
    ### Download DEM 
    # pip install elevation    # to download SRTM https://github.com/bopen/elevation (no need)
    pip install wget  
+   # download 3DEP elevation (https://github.com/hyriver/py3dep)
+   pip install py3dep
+   pip install requests-cache   # optional but recommend. 
    
 ```
