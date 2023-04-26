@@ -23,9 +23,6 @@ docker run --rm -it sentinel-1-pre-processing
 docker run --rm -v /home/lihu9680/Bhaltos2/lingcaoHuang:/data -v $HOME:/home/user  -it sentinel-1-pre-processing
 
 
-# by mount home folder, the container can load environment settings in .bashrc
-docker run --rm -v $HOME/:/home/hlc/ -it sentinel-1-pre-processing
-
 # tag and push to docker hub
 docker tag sentinel-1-pre-processing sentinel-1-pre-processing:v1
 docker push sentinel-1-pre-processing:v1
