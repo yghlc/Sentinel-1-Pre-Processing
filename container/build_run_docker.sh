@@ -20,7 +20,10 @@ docker rmi  -f sentinel-1-pre-processing
 docker run --rm -it sentinel-1-pre-processing
 
 # run, mount /data (-v PATH-on-host-machine:PATH-inside-container)
+# on TESIA
 docker run --rm -v /home/lihu9680/Bhaltos2/lingcaoHuang:/data -v $HOME:/home/user  -it sentinel-1-pre-processing
+# on my Laptop:
+docker run --rm -v ${HOME}/Data:/data -v ${HOME}:/home/user  -it sentinel-1-pre-processing
 
 
 # tag and push to docker hub
