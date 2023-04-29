@@ -50,6 +50,7 @@ ENV PATH=/opt/Sentinel-1-Pre-Processing:$PATH
 ENV SNAP_BIN_GPT=/opt/snap/bin/gpt
 ENV GDAL_TRANSLATE_BIN=/opt/miniconda3/bin/gdal_translate
 
+RUN cd /opt/Sentinel-1-Pre-Processing && git pull
 COPY run.sh .
 # WORKDIR /data
 
