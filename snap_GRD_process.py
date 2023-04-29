@@ -60,12 +60,23 @@ def test_Sigma0_FF_2_gtif():
     RTC_v3.Sigma0_FF_2_gtif(Output_Directory, Sigma0_directory, granule)
 
 def main(options, args):
-    grd_file_list =get_grd_file_list(args[0])
-    save_dir = options.save_dir
-    temp_dir = options.temp_dir if options.temp_dir is not None else save_dir
-    pixel_size = options.save_pixel_size
-    dem_file = options.elevation_file
-    setting_json = options.env_setting
+
+    if args[0].endswith('.json'):
+        input_dict = read_dict_from_txt_json(args[0])
+        file_list_or_dir = input_dict['s1_zip_file_list_or_dir']
+        grd_file_list = get_grd_file_list(file_list_or_dir)
+        save_dir = input_dict['sar_images_save_dir']
+        temp_dir = input_dict['temp_dir'] if 'temp_dir' in input_dict.keys() else save_dir
+        pixel_size = input_dict['save_pixel_size']
+        dem_file = input_dict['elevation_file'] if 'elevation_file' in input_dict.keys() else None
+        setting_json = input_dict['env_setting'] if 'env_setting' in input_dict.keys() else 'env_setting.json'
+    else:
+        grd_file_list = get_grd_file_list(args[0])
+        save_dir = options.save_dir
+        temp_dir = options.temp_dir if options.temp_dir is not None else save_dir
+        pixel_size = options.save_pixel_size
+        dem_file = options.elevation_file
+        setting_json = options.env_setting
 
     if os.path.isfile(setting_json):
         env_setting = read_dict_from_txt_json(setting_json)

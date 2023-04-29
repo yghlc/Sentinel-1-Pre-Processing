@@ -17,6 +17,7 @@ import asf_search as asf
 from netrc import netrc
 
 from genTools import read_list_from_txt
+from genTools import read_dict_from_txt_json
 
 def get_user_password_netrc():
     # Set up authentication using .netrc file
@@ -109,14 +110,25 @@ def download_data_from_asf(idx,roi_count,roi_wkt, save_dir, start_date, end_date
     sys.stdout = stdoutOrigin
 
 def main(options, args):
-    extent_shp = args[0]
-    assert os.path.isfile(extent_shp)
 
-    save_dir = options.save_dir
-    start_date = options.start_date
-    end_date = options.end_date
-    user_name = options.username
-    password = options.password
+    if args[0].endswith('.json'):
+        input_dict = read_dict_from_txt_json(args[0])
+
+        extent_shp = input_dict['extent_shp']
+        save_dir = input_dict['s1_zip_save_dir']
+        start_date = input_dict['start_date']
+        end_date = input_dict['end_date']
+        user_name = input_dict['username'] if 'username' in input_dict.keys() else None
+        password = input_dict['password'] if 'password' in input_dict.keys() else None
+    else:
+        extent_shp = args[0]
+        save_dir = options.save_dir
+        start_date = options.start_date
+        end_date = options.end_date
+        user_name = options.username
+        password = options.password
+
+    assert os.path.isfile(extent_shp)
 
     if user_name is None or password is None:
         print('Get user name and password from the .netrc file')
