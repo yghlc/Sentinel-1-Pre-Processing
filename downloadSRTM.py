@@ -117,10 +117,10 @@ def extent_to_1degree_tiles(poly):
     # N15W086.SRTMGL1.hgt.zip
     tiles = []
     for y in y_list:
-        lat_str = '%d'.zfill(2)%abs(y)
+        lat_str = str(abs(y)).zfill(2)
         lat_str = 'N'+ lat_str if y > 0 else 'S'+lat_str
         for x in x_list:
-            lon_str = '%d'.zfill(3) % abs(x)
+            lon_str = str(abs(x)).zfill(3)
             lon_str = 'E' + lon_str if x > 0 else 'W' + lon_str
             tiles.append(lat_str+lon_str+'.SRTMGL1.hgt.zip')
     return tiles
