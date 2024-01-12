@@ -170,6 +170,8 @@ def main(options, args):
 
     if cache_dir is None:
         cache_dir = os.path.expanduser('~/elevation')
+    else:
+        cache_dir = os.path.abspath(cache_dir)
     if os.path.isdir(cache_dir) is False:
         os.makedirs(cache_dir)
 
