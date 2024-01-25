@@ -48,7 +48,7 @@ RUN wget --quiet https://download.esa.int/step/snap/9.0/installers/esa-snap_all_
 ## wait 20 minutes
 #RUN sleep 1200
 
-RUN /opt/snap/bin/snap --nosplash --nogui --modules --update-all 2>&1 | while read -r line; do  \
+RUN /opt/snap/bin/gpt --nosplash --nogui --modules --update-all 2>&1 | while read -r line; do  \
     echo "$line" \
     [ "$line" = "updates=0" ] && sleep 2 && pkill -TERM -f "snap/jre/bin/java" \
     done
