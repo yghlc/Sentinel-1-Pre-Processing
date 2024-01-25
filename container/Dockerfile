@@ -41,6 +41,11 @@ RUN wget --quiet https://download.esa.int/step/snap/9.0/installers/esa-snap_all_
 
 # update SNAP when a container launch?
 #RUN /opt/snap/bin/snap --nosplash --nogui --modules --update-all
+# "update SNAP" doesn't normally exist (using Ctrl+C to end it), so put it into background,
+# then wait a while to make sure the updating is complete
+RUN ["sh", "-c", "/opt/snap/bin/snap --nosplash --nogui --modules --update-all &"]
+# wait 20 minutes
+RUN sleep 1200
 
 # clone github repo
 RUN git clone https://github.com/yghlc/Sentinel-1-Pre-Processing.git /opt/Sentinel-1-Pre-Processing
