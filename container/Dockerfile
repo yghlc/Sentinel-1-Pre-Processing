@@ -49,7 +49,7 @@ RUN wget --quiet https://download.esa.int/step/snap/9.0/installers/esa-snap_all_
 #RUN sleep 1200
 
 # update SNAP in docker: https://senbox.atlassian.net/wiki/spaces/SNAP/pages/30539785/Update+SNAP+from+the+command+line
-RUN /opt/snap/bin/snap --nosplash --nogui --modules --update-all 2>&1 | while read -r line; do   echo "$line"; [ "$line" = "updates=0" ]  && sleep 2 && pkill -TERM -f "snap/jre/bin/java" || true; done
+RUN /opt/snap/bin/snap --nosplash --nogui --modules --update-all 2>&1 | while read -r line; do   echo "$line"; [ "$line" = "updates=0" ]  && sleep 2 && pkill -TERM -f "snap/jre/bin/java" ; exit 0; done
 
 # clone github repo
 RUN git clone https://github.com/yghlc/Sentinel-1-Pre-Processing.git /opt/Sentinel-1-Pre-Processing
